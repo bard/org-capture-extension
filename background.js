@@ -20,28 +20,42 @@
 // THE SOFTWARE.								 //
 ///////////////////////////////////////////////////////////////////////////////////
 
-
 chrome.runtime.onInstalled.addListener(function (details) {
   if (details.reason == "install")
-    chrome.storage.sync.set(
-      {
-        selectedTemplate: 'p',
-        unselectedTemplate: 'L',
-        useNewStyleLinks: true,
-        debug: false,
-        overlay: true
-      });
-  else if ((details.reason == "update" && details.previousVersion.startsWith("0.1")))
-    chrome.storage.sync.set(
-      {
-        selectedTemplate: 'p',
-        unselectedTemplate: 'L',
-        useNewStyleLinks: false,
-        debug: false,
-        overlay: true
-      });
+    chrome.storage.sync.set({
+      selectedTemplate:
+        "org-protocol://roam-ref?ref={url}&title={title}&body={selection}",
+      unselectedTemplate: "org-protocol://roam-ref?ref={url}&title={title}",
+      debug: false,
+      overlay: true,
+    });
+  else if (
+    details.reason == "update" &&
+    details.previousVersion.startsWith("0.1")
+  )
+    chrome.storage.sync.set({
+      selectedTemplate:
+        "org-protocol://roam-ref?ref={url}&title={title}&body={selection}",
+      unselectedTemplate: "org-protocol://roam-ref?ref={url}&title={title}",
+      debug: false,
+      overlay: true,
+    });
 });
 
-chrome.browserAction.onClicked.addListener(function (tab) {
-  chrome.tabs.executeScript({file: "capture.js"});
+chrome.action.onClicked.addListener(function (tab) {
+  chrome.scripting.executeScript({
+    target: { tabId: tab.id },
+    files: ["capture.js"],
+  });
+});
+
+chrome.commands.onCommand.addListener(function (command) {
+  if (command === "_execute_action") {
+    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+      chrome.scripting.executeScript({
+        target: { tabId: tabs[0].id },
+        files: ["capture.js"],
+      });
+    });
+  }
 });

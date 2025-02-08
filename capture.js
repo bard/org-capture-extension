@@ -20,38 +20,30 @@
 // THE SOFTWARE.								 //
 ///////////////////////////////////////////////////////////////////////////////////
 
-
 (function () {
-
-
   class Capture {
-
-   createCaptureURI() {
-     var protocol = "capture";
-     var template = (this.selection_text != "" ? this.selectedTemplate : this.unselectedTemplate);
-     if (this.useNewStyleLinks)
-       return "org-protocol://"+protocol+"?template="+template+'&url='+this.encoded_url+'&title='+this.escaped_title+'&body='+this.selection_text;
-     else
-       return "org-protocol://"+protocol+":/"+template+'/'+this.encoded_url+'/'+this.escaped_title+'/'+this.selection_text;
-    }
-
     constructor() {
       this.window = window;
       this.document = document;
       this.location = location;
 
-      this.selection_text = escapeIt(window.getSelection().toString());
-      this.encoded_url = encodeURIComponent(location.href);
-      this.escaped_title = escapeIt(document.title);
-
+      this.selectionText = escapeIt(window.getSelection().toString());
+      this.encodedUrl = encodeURIComponent(location.href);
+      this.escapedTitle = escapeIt(document.title);
     }
 
     capture() {
-      var uri = this.createCaptureURI();
+      const template =
+        this.selectionText.trim() !== ""
+          ? this.selectedTemplate
+          : this.unselectedTemplate;
 
-      if (this.debug) {
-        logURI(uri);
-      }
+      const uri = template
+        .replace(/{url}/g, this.encodedUrl)
+        .replace(/{title}/g, this.escapedTitle)
+        .replace(/{selection}/g, this.selectionText);
+
+      log("Capturing the following URI with new org-protocol: ", uri);
 
       location.href = uri;
 
@@ -62,54 +54,54 @@
 
     captureIt(options) {
       if (chrome.runtime.lastError) {
-        alert("Could not capture url. Error loading options: " + chrome.runtime.lastError.message);
+        alert(
+          "Could not capture url. Error loading options: " +
+            chrome.runtime.lastError.message,
+        );
         return;
       }
 
-      if (this.selection_text) {
-        this.template = this.selectedTemplate;
-        this.protocol = this.selectedProtocol;
-      } else {
-        this.template = this.unselectedTemplate;
-        this.protocol = this.unselectedProtocol;
-      }
-
-      for(var k in options) this[k] = options[k];
+      for (let k in options) this[k] = options[k];
       this.capture();
     }
   }
 
-
-  function replace_all(str, find, replace) {
-    return str.replace(new RegExp(find, 'g'), replace);
+  function replaceAll(str, find, replace) {
+    return str.replace(new RegExp(find, "g"), replace);
   }
 
   function escapeIt(text) {
-    return replace_all(replace_all(replace_all(encodeURIComponent(text), "[(]", escape("(")),
-                                   "[)]", escape(")")),
-                       "[']" ,escape("'"));
+    return replace_all(
+      replace_all(
+        replace_all(encodeURIComponent(text), "[(]", escape("(")),
+        "[)]",
+        escape(")"),
+      ),
+      "[']",
+      escape("'"),
+    );
   }
 
-  function logURI(uri) {
-    window.console.log("Capturing the following URI with new org-protocol: ", uri);
-    return uri;
+  function log(message) {
+    if (!this.debug) return;
+    console.log(message);
   }
 
   function toggleOverlay() {
-    var outer_id = "org-capture-extension-overlay";
-    var inner_id = "org-capture-extension-text";
-    if (! document.getElementById(outer_id)) {
-      var outer_div = document.createElement("div");
-      outer_div.id = outer_id;
+    const outerId = "org-capture-extension-overlay";
+    const innerId = "org-capture-extension-text";
+    if (!document.getElementById(outerId)) {
+      const outerDiv = document.createElement("div");
+      outerDiv.id = outerId;
 
-      var inner_div = document.createElement("div");
-      inner_div.id = inner_id;
-      inner_div.innerHTML = "Captured";
+      const innerDiv = document.createElement("div");
+      innerDiv.id = innerId;
+      innerDiv.innerHTML = "Captured";
 
-      outer_div.appendChild(inner_div);
-      document.body.appendChild(outer_div);
+      outerDiv.appendChild(innerDiv);
+      document.body.appendChild(outerDiv);
 
-      var css = document.createElement("style");
+      const css = document.createElement("style");
       css.type = "text/css";
       // noinspection JSAnnotator
       css.innerHTML = `#org-capture-extension-overlay {
@@ -135,24 +127,24 @@
     transform: translate(-50%,-50%);
     -ms-transform: translate(-50%,-50%);
 }`;
-        document.body.appendChild(css);
+      document.body.appendChild(css);
     }
 
     function on() {
-      document.getElementById(outer_id).style.display = "block";
+      document.getElementById(outerId).style.display = "block";
     }
 
     function off() {
-      document.getElementById(outer_id).style.display = "none";
+      document.getElementById(outerId).style.display = "none";
     }
 
     on();
     setTimeout(off, 200);
-
   }
 
-
-  var capture = new Capture();
-  var f = function (options) {capture.captureIt(options)};
+  const capture = new Capture();
+  const f = function (options) {
+    capture.captureIt(options);
+  };
   chrome.storage.sync.get(null, f);
 })();

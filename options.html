@@ -1,61 +1,62 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-    <head>
-        <title>Org Capture Settings</title>
-        <style>
-         body: { padding: 10px; }
-        </style>
-    </head>
+  <head>
+    <title>Org Capture Settings</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"
+    />
+    <style>
+      .note {
+        font-size: 0.9rem;
+        color: var(--muted-color);
+      }
+      @media (prefers-color-scheme: dark) {
+        html {
+          data-theme: "dark";
+        }
+      }
+      @media (prefers-color-scheme: light) {
+        html {
+          data-theme: "light";
+        }
+      }
+    </style>
+  </head>
 
-    <body>
+  <body>
+    <main class="container">
+      <form>
+        <fieldset>
+          <label for="selTemplate">URL pattern for when text is selected</label>
+          <input id="selTemplate" type="text" name="selTemplate" />
 
-        <table>
-            <tr>
-                <td>
-                    Get notified after captures?
-                </td>
-                <td>
-                    <input id="overlay" type="checkbox" />
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    Selected Template
-                </td>
-                <td>
-                    <input id="selTemplate" />
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    Unselected Template
-                </td>
-                <td>
-                    <input id="unselTemplate">
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    Use New-Style links? (Recommended for Org-Mode 9.0+)
-                </td>
-                <td>
-                    <input id="useNewStyle" type="checkbox" />
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    Debug (will produce logging messages to console)
-                </td>
-                <td>
-                    <input id="debug" type="checkbox" />
-                </td>
-		<td><bold>Note:</bold> You will have to enable "Preserve Log" in the console in order to see the logged messages.
-	    </tr>
-        </table>
+          <label for="unselTemplate"
+            >URL pattern for when no text is selected</label
+          >
+          <input id="unselTemplate" type="text" name="unselTemplate" />
+          <small id="template-helper"
+            >Available placeholders: {url}, {title}, {selection}</small
+          >
 
-        <div id="status"></div>
-        <button id="save">Save</button>
+          <label for="overlay">
+            <input type="checkbox" id="overlay" name="overlay" role="switch" />
+            Notify after capture
+          </label>
 
-        <script src="options.js"></script>
-    </body>
+          <label for="debug">
+            <input type="checkbox" id="debug" name="debug" role="switch" />
+            Log debug messages to console (Enable "Preserve log" in the console
+            to see the logged messages)
+          </label>
+        </fieldset>
+
+        <input type="button" id="save" class="grid" value="Save" />
+      </form>
+
+      <div id="status"></div>
+    </main>
+
+    <script src="options.js"></script>
+  </body>
 </html>
