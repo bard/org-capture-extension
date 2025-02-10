@@ -71,9 +71,9 @@
   }
 
   function escapeIt(text) {
-    return replace_all(
-      replace_all(
-        replace_all(encodeURIComponent(text), "[(]", escape("(")),
+    return replaceAll(
+      replaceAll(
+        replaceAll(encodeURIComponent(text), "[(]", escape("(")),
         "[)]",
         escape(")"),
       ),
