@@ -48,14 +48,3 @@ chrome.action.onClicked.addListener(function (tab) {
     files: ["capture.js"],
   });
 });
-
-chrome.commands.onCommand.addListener(function (command) {
-  if (command === "_execute_action") {
-    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-      chrome.scripting.executeScript({
-        target: { tabId: tabs[0].id },
-        files: ["capture.js"],
-      });
-    });
-  }
-});
