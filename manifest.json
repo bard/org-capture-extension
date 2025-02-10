@@ -26,6 +26,13 @@
         "default": "Ctrl+Shift+L",
         "mac": "Command+Shift+L"
       }
+    },
+    "secondary": {
+      "description": "Secondary capture command",
+      "suggested_key": {
+        "default": "Ctrl+Shift+K",
+        "mac": "Command+Shift+K"
+      }
     }
   }
 }

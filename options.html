@@ -28,16 +28,39 @@
     <main class="container">
       <form>
         <fieldset>
-          <label for="selTemplate">URL pattern for when text is selected</label>
+          <h3>Primary Action</h3>
+
+          <label for="unselTemplate">Without text selection:</label>
+          <input id="unselTemplate" type="text" name="unselTemplate" />
+
+          <label for="selTemplate">With text selection:</label>
           <input id="selTemplate" type="text" name="selTemplate" />
 
-          <label for="unselTemplate"
-            >URL pattern for when no text is selected</label
-          >
-          <input id="unselTemplate" type="text" name="unselTemplate" />
           <small id="template-helper"
             >Available placeholders: {url}, {title}, {selection}</small
           >
+
+          <h3>Secondary Action</h3>
+
+          <label for="unselTemplateSecondary">With text selection:</label>
+          <input
+            id="unselTemplateSecondary"
+            type="text"
+            name="unselTemplateSecondary"
+          />
+
+          <label for="selTemplateSecondary">Without text selection:</label>
+          <input
+            id="selTemplateSecondary"
+            type="text"
+            name="selTemplateSecondary"
+          />
+
+          <small id="template-helper-secondary"
+            >Available placeholders: {url}, {title}, {selection}</small
+          >
+
+          <hr />
 
           <label for="overlay">
             <input type="checkbox" id="overlay" name="overlay" role="switch" />
